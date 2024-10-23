@@ -27,7 +27,7 @@ def work(_:Client, message:Message):
     try:
         for chat in chat["to"]:
             if caption:
-                message.copy(chat, caption=caption, parse_mode=ParseMode.MARKDOWN)
+                app.forward_messages(chat, from_chat_id=message.chat.id, message_ids=message.message_id)
             elif msg:
                 app.send_message(chat, msg, parse_mode=ParseMode.MARKDOWN)
             else:
@@ -49,7 +49,7 @@ def forward(client:Client, message:Message):
                 if len(message.command) > 3:
                     offset_id = int(message.command[3])
                 for msg in client.get_chat_history(chat_id, limit=limit, offset_id=offset_id):
-                    msg.copy(message.chat.id)
+                    client.forward_messages(message.chat.id, from_chat_id=chat_id, message_ids=msg.message_id)
                     sleep(random.randint(1, 5))
             except Exception as e:
                 message.reply_text(f"Error:\n```{traceback.format_exc()}```")
